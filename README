@@ -1,0 +1,8 @@
+Ruby-based Web Application which lists Open Source companies.
+
+*** Why is it important? ***
+Knowing what other companies are in your ecosystem is important. This is no different in Open Source. You can make contacts, learn about new services and group together to reduce training costs or collaborate with each other. This is why it's key that we create a community of Open Source companies to help drive innovation and develop new exciting opportunities together.
+
+Currently this project is in its infancy.
+
+Powered by Sinatra and DataMapper
