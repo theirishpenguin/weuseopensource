@@ -1,6 +1,7 @@
 <%
-  output = ''
-  @companies.each{|cmp| output << "<p>#{cmp.name}</p>" }
+  output = '<ul>'
+  @companies.each {|c| output << "<li>#{c.name}</li>" }
+  output << '</ul>'
 %>
 <%= output %>
 <%= "Create a <a href='/new'>new</a> company" %>
