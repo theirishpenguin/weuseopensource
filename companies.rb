@@ -5,6 +5,13 @@ require 'dm-validations'
 require 'dm-timestamps'
 require 'uuidtools'
 
+# Define a method called send_confirmation email to send email your own preffered way
+# in a file called emailconfig.rb file in the current directory and set MAILER_ENABLED
+# to true. Otherwise, this require statement should be commented out
+# require 'emailconfig'
+
+MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
+
 module UuidHelper
   def generate_uuid
     self.uuid = UUID.timestamp_create().to_s
@@ -49,6 +56,9 @@ post '/create' do
     :email => params[:company_email])
 
   if @company.save
+    # TODO
+    #send_confirmation_email('todo', 'todo', 'todo', 'todo') if MAILER_ENABLED 
+	
     redirect '/'
   else
     render '/new'
