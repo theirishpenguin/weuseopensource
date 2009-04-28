@@ -7,5 +7,11 @@
   <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
 <head>
 <body>
+<% unless flash[:notice].blank? %>
+  <div class="notice">
+    <%= format_errors flash[:notice] %>
+  </div>
+<% end %>
+
 <%= yield %>
 </body>

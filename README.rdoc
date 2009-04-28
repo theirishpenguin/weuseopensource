@@ -10,8 +10,8 @@ Currently this project is in its infancy.
 WeUseOpenSource is built on Sinatra and DataMapper. You'll need to have somethings in place before commencing development, namely
 
 Installing the prerequisite gems
-
-  sudo gem install sinatra datamapper data_objects do_sqlite3 uuidtools
+  gem sources -a http://gems.github.com (you only ever have to do this once)
+  sudo gem install sinatra datamapper data_objects do_sqlite3 uuidtools nakajima-rack-flash
 
 Note: On Ubuntu, you will need to have libsqlite3-dev installed via apt
 
