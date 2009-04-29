@@ -1,8 +1,10 @@
 <div>
-  <form action="/update" method="POST">
+  <form action="/update/<%= @company.uuid %>" method="POST">
     Name <input type="text" name="company_name" id="company_name" value="<%= @company.name %>"></input>
-    <br/>Website <input type="text" name="company_website" id="company_website" value="<%= @company.website %>"></input>
-    <br/>Email <input type="text" name="company_email" id="company_email" value="<%= @company.email %>"></input>
+    <br/>Website http:// <input type="text" name="company_website" id="company_website" value="<%= @company.website %>"></input>
+    <br/>Company Email <input type="text" name="company_email" id="company_email" value="<%= @company.company_email %>"></input>
+    <br/>Administrative Email <input type="text" name="admin_email" id="admin_email" value="<%= @company.admin_email %>"></input>
+    <br/>Blurb <input type="text" name="company_blurb" id="company_blurb" value="<%= @company.blurb %>"></input>
     <br/>Description <textarea name="company_description" id="company_description" rows="20" value="<%= @company.description %>"></textarea>
     <br/><input type="submit" value="Save"/>
   </form>
