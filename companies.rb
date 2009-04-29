@@ -95,7 +95,7 @@ post '/create' do
     # TODO
     if MAILER_ENABLED 
       send_confirmation_email('no-reply@example.com', @company.admin_email, 'You need to activate your account',
-      "Please click this link or copy and paste it into your browser http://localhost:4567/update/#{@company.uuid}")
+      "Please click this link or copy and paste it into your browser http://#{DOMAIN}/update/#{@company.uuid}")
       @company.update_attributes(:status => :notified)
     end
 
@@ -133,7 +133,7 @@ get '/update/:uuid' do
     erb :welcome
   else
     # TODO: Move this out of here eventually
-    raise 'Your account is not currently active. Please contact our support team.'
+    raise 'Your account is not currently active or cannot be activated. Please contact our support team.'
   end
 end
 
@@ -150,15 +150,14 @@ post '/update/:uuid' do
 #  elsif @company.status == :activated
     if @company.status == :activated
 
-    @company.update_attributes(
-      :website => params[:company_website],
-      :blurb => params[:company_blurb],
-      :name => params[:company_name],
-      :description => params[:company_description],
-      :company_email => params[:company_email],
-      :admin_email => params[:admin_email])
+      if @company.update_attributes(
+        :website => params[:company_website],
+        :blurb => params[:company_blurb],
+        :name => params[:company_name],
+        :description => params[:company_description],
+        :company_email => params[:company_email],
+        :admin_email => params[:admin_email])
 
-    if @company.save
       redirect '/'
     else
       erb :new
