@@ -1,5 +1,7 @@
 <div>
-  <form action="/update/<%= @company.uuid %>" method="POST">
+  <form action="/companies/<%= @company.uuid %>" method="POST">
+    <input name="_method" value="put" />
+
     Name <input type="text" name="company_name" id="company_name" value="<%= @company.name %>"></input>
     <br/>Website http:// <input type="text" name="company_website" id="company_website" value="<%= @company.website %>"></input>
     <br/>Company Email <input type="text" name="company_email" id="company_email" value="<%= @company.company_email %>"></input>

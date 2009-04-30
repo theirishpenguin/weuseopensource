@@ -8,7 +8,7 @@ require 'uuidtools'
 require 'rack-flash'
 #require 'ruby-debug'
 
-#enable :methodoverride
+enable :methodoverride
 enable :sessions
 use Rack::Flash
 
@@ -35,7 +35,7 @@ class Company
   before :create, :generate_uuid
 
 
-  property :id, Integer, :serial => true    # primary serial key
+  property :id, Integer, :serial => true
   property :website, String, :nullable => false, :unique => true, :length => (1..100)
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
@@ -44,12 +44,12 @@ class Company
   property :description, Text
   property :created_at, DateTime
   property :updated_at, DateTime
-  property :uuid, String #OPTIMIZEME: When db platform decided
+  property :uuid, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :status, Enum[:pending, :notified, :activated, :suspended], :nullable => false
 
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
 
-  def check_email_consistency_wrt_website #TODO: Unit test me!
+  def check_email_consistency_wrt_website
     consistency = [false, "The domain of the Admin Email and Company Website much match"]
 
     email_domain = admin_email.split('@')[1]
@@ -70,17 +70,57 @@ DataMapper.auto_upgrade!
 
 
 
+### ACTIVATION RESOURCE ###
+
+get '/activation/:uuid/new' do
+  @company = Company.first(:uuid => params[:uuid])
+
+  if @company.status == :notified
+    erb :'activation/activate'
+  elsif @company.status == :activated # TODO: Change from exception
+    raise 'Your account is already active.'
+  else #TODO: Change from exception
+    raise 'Your account cannot be activated.'
+  end
+
+end
+
+post '/activation/:uuid' do
+  @company = Company.first(:uuid => params[:uuid])
+
+  if @company.status == :notified
+    @company.update_attributes(:status => :activated)
+    @admin_link = "http://#{DOMAIN}/companies/#{@company.uuid}/edit"
+
+    if MAILER_ENABLED 
+      send_confirmation_email('no-reply@example.com', @company.admin_email, 'Account Activated',
+      "Please click this link or copy and paste it into your browser #{@admin_link} to make changes to your account.")
+    end
+
+    erb :'activation/welcome'
+  elsif @company.status == :activated # TODO: Change from exception
+    raise 'Your account is already active.'
+  else #TODO: Change from exception
+    raise 'Your account cannot be activated.'
+  end
+end
+
+### ### ### ### ### ###
+
+
+### weuseopensource ###
+
 get '/' do
   @companies = Company.all
   erb :index
 end
 
-get '/new' do
+get '/companies/new' do
   @company = Company.new
   erb :new
 end
 
-post '/create' do
+post '/companies' do
 
   @company = Company.new(
     :website => params[:company_website],
@@ -92,10 +132,10 @@ post '/create' do
     :status => :pending)
 
   if @company.save
-    # TODO
+
     if MAILER_ENABLED 
       send_confirmation_email('no-reply@example.com', @company.admin_email, 'You need to activate your account',
-      "Please click this link or copy and paste it into your browser http://#{DOMAIN}/update/#{@company.uuid}")
+      "Please click this link or copy and paste it into your browser http://#{DOMAIN}/activation/#{@company.uuid}/new")
       @company.update_attributes(:status => :notified)
     end
 
@@ -106,76 +146,52 @@ post '/create' do
   end
 end
 
-get '/edit/:uuid' do
+get '/companies/:uuid/edit' do
   @company = Company.first(:uuid => params[:uuid])
+  raise 'No such account.' if @company.nil?
   erb :edit
 end
 
-# TODO: Is there a way to carry out activation without doing a get call
-# or at least using the _method=POST hack somehow?
-get '/update/:uuid' do
+put '/companies/:uuid' do
   @company = Company.first(:uuid => params[:uuid])
 
-  if @company.nil? #FIXME
-    raise 'No such account. Please contact our support team.'
-  end
+  if @company.status == :activated
 
-  if @company.status == :notified
-    @company.update_attributes(:status => :activated)
-
-    @admin_link = "http://#{DOMAIN}/edit/#{@company.uuid}"
-
-    if MAILER_ENABLED 
-      send_confirmation_email('no-reply@example.com', @company.admin_email, 'Account Activated',
-      "Please click this link or copy and paste it into your browser #{@admin_link} to make changes to your account.")
-    end
-
-    erb :welcome
-  else
-    # TODO: Move this out of here eventually
-    raise 'Your account is not currently active or cannot be activated. Please contact our support team.'
-  end
-end
-
-post '/update/:uuid' do
-  @company = Company.first(:uuid => params[:uuid])
-
-# TODO: Commented out until we see if we can do an POST account activation
-#  # First time, this is called activate account
-#  if @company.status == :notified
-#    @company.update_attributes(:status => :activated)
-#
-#    erb :welcome
-#
-#  elsif @company.status == :activated
-    if @company.status == :activated
-
-      if @company.update_attributes(
-        :website => params[:company_website],
-        :blurb => params[:company_blurb],
-        :name => params[:company_name],
-        :description => params[:company_description],
-        :company_email => params[:company_email],
-        :admin_email => params[:admin_email])
+    if @company.update_attributes(
+      :website => params[:company_website],
+      :blurb => params[:company_blurb],
+      :name => params[:company_name],
+      :description => params[:company_description],
+      :company_email => params[:company_email],
+      :admin_email => params[:admin_email])
 
       redirect '/'
     else
       erb :new
     end
 
-  else
-    # TODO: Move this out of here eventually
+  else #TODO: Change from exception
     raise 'Your account is not currently active. Please contact our support team.'
   end
 
 end
 
+### ### ### ### ### ###
+
+
 private
 
-# TODO: Move to helpers file
-def format_errors(errors)
-  msg = ''
-  @company.errors.each_pair {|k,v| msg << "<li>#{v * '</li><li>'}</li>"}
-  msg = "Please fix the following errors:<br /><ul>#{msg}</ul>" unless msg.empty?
-  msg
+### HELPERS ###
+
+helpers do
+
+  def format_errors(errors)
+    msg = ''
+    @company.errors.each_pair {|k,v| msg << "<li>#{v * '</li><li>'}</li>"}
+    msg = "Please fix the following errors:<br /><ul>#{msg}</ul>" unless msg.empty?
+    msg
+  end
+
 end
+
+### ### ### ### ### ###
