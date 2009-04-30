@@ -18,7 +18,7 @@ use Rack::Flash
 # to true. Otherwise, this require statement should be commented out
 require 'emailconfig'
 
-MAILER_ENABLED = true # Set this to true if you have a valid mail configuration in emailconfig.rb
+MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'
 
 module UuidHelper
