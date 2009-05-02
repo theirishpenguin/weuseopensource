@@ -16,7 +16,7 @@ use Rack::Flash
 # Define a method called send_confirmation email to send email your own prefered way
 # in a file called emailconfig.rb file in the current directory and set MAILER_ENABLED
 # to true. Otherwise, this require statement should be commented out
-require 'emailconfig'
+#require 'emailconfig'
 
 MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'

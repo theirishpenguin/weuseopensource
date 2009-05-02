@@ -3,18 +3,26 @@ Ruby-based Web Application which lists Open Source companies.
 = Why is it important?
 Knowing what other companies are in your ecosystem is important. This is no different in Open Source. You can make contacts, learn about new services and group together to reduce training costs or collaborate with each other. This is why it's key that we create a community of Open Source companies to help drive innovation and develop new exciting opportunities together.
 
-Currently this project is in its infancy.
+weuseopensource is a project to try and help with that.
 
 
 == Getting started
-WeUseOpenSource is built on Sinatra and DataMapper. You'll need to have somethings in place before commencing development, namely
+weuseopensource is built on Sinatra and DataMapper. You'll need to have somethings in place before commencing development, namely
 
-Note: The minimum Ruby version required is 1.8.7. Older Ruby versions will not work.
 
 Installing the prerequisite gems
   gem sources -a http://gems.github.com (you only ever have to do this once)
   sudo gem install sinatra datamapper data_objects do_sqlite3 uuidtools nakajima-rack-flash
   sudo gem install ruby-debug (only needed if you plan to carry out command line debugging)
+
+Note: To run weuseopensource out of the box, Ruby version required is 1.8.7. If you want to use Ruby 1.8.6 then please install the ruby 'extensions' gem (http://extensions.rubyforge.org/rdoc/index.html) via...
+  sudo gem install extensions
+
+... and after the line that requires rubygems at the top of companies.rb put a require 'extensions/string'
+
+... and change line 59 of companies.rb (at time of writing) from calling website.start_with? to website.starts_with?
+
+... and yes, you're right that is a bit of a pain
 
 Note: On Ubuntu, you will need to have libsqlite3-dev installed via apt
 
