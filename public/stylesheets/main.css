@@ -1,2 +1,9 @@
-*{border: 1px solid red}
+/* Please supply your own CSS file customize look'n'feel. */
 
+
+#contain{
+margin:auto;
+width:785px;
+font-size:1.2em;
+font-spacing:1.4em;
+}

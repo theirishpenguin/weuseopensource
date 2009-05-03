@@ -1,7 +1,31 @@
-<%
-  output = '<ul>'
-  @companies.each {|c| output << "<li>#{c.name}</li>" }
-  output << '</ul>'
-%>
-<%= output %>
-<%= "Create a <a href='/companies/new'>new</a> company" %>
+<div id = 'contain' class = 'clearfix'>
+	<div id = 'logo'>
+		
+	</div>
+	<div id = 'headerContent'>
+		<p>Knowing what other <span class = 'important'>companies</span> are in your ecosystem is important. This is no different in <span class = 'important'>Open Source</span>. You can make contacts, learn about new services and group together to reduce training costs or collaborate with each other.This is why it's key that we create a <span class = 'important'>community</span> of Open Source companies to help drive <span class = 'important'>innovation</span> and develop new exciting opportunities together.  </p>
+	
+	</div>	
+	<div id = "contentMain" class ='floatLeft margin20L padding5'>		
+		<input type = 'text' value = 'search me!'>  </>
+		<%
+		  output = '<ul>'
+		  @companies.each {|c| output << "<li>#{c.name}</li>" }
+		  output << '</ul>'
+		%>
+		<%= output %>
+	</div>
+		
+	<div id = "contentSecondary" class ='floatLeft clearfix margin20L'>
+		<div class = 'margin20B'>
+			<a id = 'register' href='/companies/new'> <%= 'Create a new company' %> </a>
+			
+		</div>
+		<div id = 'information' class ='padding5'>
+			<h3>Selected Company Name </h3>
+			<p>info blub,re equal distance in on both endsre equal distance in on both endsre equal distance in on both 				endsre equal distance in on both ends</p>
+<p>info blub,re equal distance in on both endsre equal distance in on both endsre equal distance in on both 				endsre equal distance in on both ends</p>
+		</div> 	
+	</div>
+
+</div>
