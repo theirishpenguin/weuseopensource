@@ -27,3 +27,5 @@ Note: To run weuseopensource out of the box, Ruby version required is 1.8.7. If 
 Note: On Ubuntu, you will need to have libsqlite3-dev installed via apt
 
   sudo aptitude install libsqlite3-dev
+
+Final touches: Rename the main.css.sample file to main.css in the public/stylesheets directory. You can then extend the main.css file as appropriate.
