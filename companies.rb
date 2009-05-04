@@ -20,6 +20,12 @@ use Rack::Flash
 
 MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'
+load 'industry_list.rb' # Pulls in a list of industriesm simply defines @@industry_list
+
+@@usage_level_list = [
+  {'1' => 'Use'},
+  {'2' => 'Develop'},
+  {'3' => 'Sell'}].freeze
 
 module UuidHelper
   def generate_uuid
@@ -37,6 +43,8 @@ class Company
 
   property :id, Integer, :serial => true
   property :website, String, :nullable => false, :unique => true, :length => (1..100)
+  property :business_category, Integer, :nullable => false
+  property :usage_level, Integer, :nullable => false
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
   property :name, String, :nullable => false
@@ -117,12 +125,18 @@ end
 
 get '/companies/new' do
   @company = Company.new
+  @industry_list = @@industry_list
+  @usage_level_list = @@usage_level_list
   erb :new
 end
 
 post '/companies' do
+  @industry_list = @@industry_list
+  @usage_level_list = @@usage_level_list
 
   @company = Company.new(
+    :business_category => params[:company_business_category],
+    :usage_level => params[:company_usage_level],
     :website => params[:company_website],
     :name => params[:company_name],
     :blurb => params[:company_blurb],
@@ -147,17 +161,25 @@ post '/companies' do
 end
 
 get '/companies/:uuid/edit' do
+  @industry_list = @@industry_list
+  @usage_level_list = @@usage_level_list
+
   @company = Company.first(:uuid => params[:uuid])
   raise 'No such account.' if @company.nil?
   erb :edit
 end
 
 put '/companies/:uuid' do
+  @industry_list = @@industry_list
+  @usage_level_list = @@usage_level_list
+
   @company = Company.first(:uuid => params[:uuid])
 
   if @company.status == :activated
 
     if @company.update_attributes(
+      :business_category => params[:company_business_category],
+      :usage_level => params[:company_usage_level],
       :website => params[:company_website],
       :blurb => params[:company_blurb],
       :name => params[:company_name],
@@ -206,7 +228,6 @@ helpers do
     end
     "<select name=\"#{resource_name}_#{field_name}\">#{html}</select>"
   end
-
 
 end
 
