@@ -20,7 +20,7 @@ use Rack::Flash
 
 MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'
-load 'industry_list.rb' # Pulls in a list of industriesm simply defines @@industry_list
+load 'industry_list.rb' # Pulls in a list of industries simply defines @@industry_list
 
 @@usage_level_list = [
   {'1' => 'Use'},

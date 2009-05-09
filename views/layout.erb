@@ -1,10 +1,13 @@
 <head>
+
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
   <!--[if IE]>
       <link href="/stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <![endif]-->
   <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="/scripts/jquery.js"></script>
 <head>
 <body>
 <% unless flash[:notice].blank? %>
@@ -13,5 +16,10 @@
   </div>
 <% end %>
 
+<div id = 'contain' class = 'clearfix'>
+	<div id = 'logo'>
+		
+	</div>
 <%= yield %>
+</div>
 </body>

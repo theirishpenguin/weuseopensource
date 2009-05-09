@@ -2,7 +2,8 @@
 
   <form action="/companies" method="POST" id="companyDetails" class="clearfix">
 <fieldset id="part1">	
-   <label for "company_name">Name </label> <input type="text" name="company_name" id="company_name" value="<%= @company.name %>"></input><br/>
+   <label for "company_name">Name </label> <input type="text" name="company_name" id="company_name" value="<%= @company.name %>  grgrgr"> </input><br/>
+<!--<label for "company.business_category"> Please select your business category </label> -->
    <%= select('company', 'business_category', @industry_list, "#{@company.business_category}") %>
 	<br />
 	We  <%= select('company', 'usage_level', @usage_level_list, "#{@company.usage_level}") %>  Open Source
@@ -13,13 +14,15 @@
 
     <label for "admin_email"> Administrative Email </label> <input type="text" name="admin_email" id="admin_email" value="<%= @company.admin_email %>"></input>
 
-   <label for "company_blurb">Blurb </label> <input type="text" name="company_blurb" id="company_blurb" value="<%= @company.blurb %>"></input>
+   <label for "company_blurb">blurb</label> <textarea name="company_blurb" id="company_blurb" value="<%= @company.blurb %>">    this is where the blurn wud be living </textarea>
 </fieldset>
-<fieldset id="part2">
+<fieldset id="part2"> 
+    <label for "company_description">Description </label><textarea  name="company_description" id="company_description" rows="20" value="<%= @company.description %>"> this is wehere the description would be livign if there as one  yp</textarea>
+<label for "save"> Please ensure that all items are completed before presssing send </label>
+<input type="submit" value="Save" id="save"/>
+
  
-    <label for "company_description">Description </label><textarea  name="company_description" id="company_description" rows="20" value="<%= @company.description %>"></textarea>
-    <input type="submit" value="Save" class="floatRight"/>
-</fieldset>
+
   </form>
 </div>
 
