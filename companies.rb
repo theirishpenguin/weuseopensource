@@ -52,6 +52,7 @@ class Company
   property :description, Text, :length => (1..2000)
   property :created_at, DateTime
   property :updated_at, DateTime
+  property :activated_at, DateTime, :default => nil
   property :uuid, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :status, Enum[:pending, :notified, :activated, :suspended], :nullable => false
 
@@ -109,15 +110,19 @@ post '/activation/:uuid' do
   @company = Company.first(:uuid => params[:uuid])
 
   if @company.status == :notified
-    @company.update_attributes(:status => :activated)
-    @admin_link = "http://#{DOMAIN}/companies/#{@company.uuid}/edit"
+    if @company.update_attributes(:status => :activated, :activated_at => DateTime.now)
 
-    if MAILER_ENABLED 
-      send_confirmation_email('no-reply@example.com', @company.admin_email, 'Account Activated',
-      "Please click this link or copy and paste it into your browser #{@admin_link} to make changes to your account.")
+      @admin_link = "http://#{DOMAIN}/companies/#{@company.uuid}/edit"
+
+      if MAILER_ENABLED 
+        send_confirmation_email('no-reply@example.com', @company.admin_email, 'Account Activated',
+        "Please click this link or copy and paste it into your browser #{@admin_link} to make changes to your account.")
+      end
+
+      erb :'activation/welcome'
+    else #TODO: Change from exception
+      raise 'Your account cannot be activated.'
     end
-
-    erb :'activation/welcome'
   elsif @company.status == :activated # TODO: Change from exception
     raise 'Your account is already active.'
   else #TODO: Change from exception
