@@ -42,13 +42,13 @@ class Company
 
 
   property :id, Integer, :serial => true
-  property :website, String, :nullable => false, :unique => true, :length => (1..100)
+  property :website, String, :unique => true, :length => (1..100)
   property :business_category, Integer, :nullable => false
   property :usage_level, Integer, :nullable => false
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
-  property :name, String, :nullable => false, :unique => true, :length => (1..60)
-  property :blurb, String, :nullable => false, :length => (1..300)
+  property :name, String, :unique => true, :length => (1..60)
+  property :blurb, String, :length => (1..300)
   property :description, Text, :length => (1..2000)
   property :created_at, DateTime
   property :updated_at, DateTime
