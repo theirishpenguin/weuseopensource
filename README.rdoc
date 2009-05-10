@@ -31,3 +31,4 @@ Note: On Ubuntu, you will need to have libsqlite3-dev installed via apt
 Final touches
   Rename the main.css.sample file to main.css in the public/stylesheets directory. You can then extend the main.css file as appropriate.
   Rename the industry_list.rb.sample file to list_industry.rb in the root directory. You can then extend the industry_list.rb file as appropriate.
+  Rename the views/footer.erb.sample file to views/footer.erb.sample in the root directory. You can then extend the views/footer.erb file as appropriate.
