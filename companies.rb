@@ -16,9 +16,9 @@ use Rack::Flash
 # Define a method called send_confirmation email to send email your own prefered way
 # in a file called emailconfig.rb file in the current directory and set MAILER_ENABLED
 # to true. Otherwise, this require statement should be commented out
-#require 'emailconfig'
+require 'emailconfig'
 
-MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
+MAILER_ENABLED = true # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'
 load 'industry_list.rb' # Pulls in a list of industries simply defines @@industry_list
 
@@ -47,18 +47,30 @@ class Company
   property :usage_level, Integer, :nullable => false
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
-  property :name, String, :nullable => false
-  property :blurb, String, :nullable => false
-  property :description, Text
+  property :name, String, :nullable => false, :unique => true, :length => (1..60)
+  property :blurb, String, :nullable => false, :length => (1..300)
+  property :description, Text, :length => (1..2000)
   property :created_at, DateTime
   property :updated_at, DateTime
   property :uuid, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :status, Enum[:pending, :notified, :activated, :suspended], :nullable => false
 
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
+  validates_with_method :blurb, :method => :blurb_legal_character_check
+  validates_with_method :description, :method => :description_legal_character_check
+
+  private
+  def blurb_legal_character_check; legal_character_check('Blurb', blurb); end
+  def description_legal_character_check; legal_character_check('Description', description); end
+
+  def legal_character_check(field, val)
+    success = [false, "#{field} cannot contain newlines or tabs"]
+    success = true if (/[\r\n\t]/.match val).nil?
+    success
+  end
 
   def check_email_consistency_wrt_website
-    consistency = [false, "The domain of the Admin Email and Company Website much match"]
+    consistency = [false, "The domain of the Admin Email and Company Website must match"]
 
     email_domain = admin_email.split('@')[1]
 
@@ -222,6 +234,8 @@ private
 ### HELPERS ###
 
 helpers do
+  include Rack::Utils
+  alias_method :h, :escape_html
 
   def format_errors(errors)
     msg = ''
