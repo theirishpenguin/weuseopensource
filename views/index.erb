@@ -14,7 +14,7 @@
 		<input type = 'text' value = 'search me!' class="margin10L">  </>
 		<%
 		  output = '<ul id = "companies" class="padding10">'
-		  @companies.each {|c| output << "<li><a>#{c.name}</a></li>" }
+		  @companies.each {|c| output << "<li><a>#{h(c.name)}</a></li>" }
 		  output << '</ul>'
 		%>
 		<%= output %>
