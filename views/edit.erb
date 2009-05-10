@@ -15,13 +15,13 @@
 
     <label for "admin_email"> Administrative Email </label> <input type="text" name="admin_email" id="admin_email" value="<%= @company.admin_email %>"></input>
 
-   <label for "company_blurb">Blurb </label> <input type="text" name="company_blurb" id="company_blurb" value="<%= @company.blurb %>"></input>
+    <label for "company_blurb">Blurb</label> <textarea name="company_blurb" id="company_blurb"><%= @company.blurb %></textarea>
 </fieldset>
-<fieldset id="part2">
- 
-    <label for "company_description">Description </label><textarea  name="company_description" id="company_description" rows="20" value="<%= @company.description %>"></textarea>
-    <input type="submit" value="Save" class="floatRight"/>
-</fieldset>
+<fieldset id="part2"> 
+    <label for "company_description">Description </label><textarea  name="company_description" id="company_description" rows="20"><%= @company.description %></textarea>
+<label for "save"> Please ensure that all items are completed before pressing send </label>
+<input type="submit" value="Save" id="save"/>
+
   </form>
 </div>
 
