@@ -6,7 +6,7 @@ require 'dm-validations'
 require 'dm-timestamps'
 require 'uuidtools'
 require 'rack-flash'
-require 'ruby-debug'
+#require 'ruby-debug'
 
 enable :methodoverride
 enable :sessions
