@@ -53,20 +53,10 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 			{	// Switch class="selected" for list item links
 				$('#companies a').removeClass('selected');
 				$(this).addClass('selected');	
-				//$('#information').load('companies/new#company_blurb');
-				$.get("companies/new", function(data){
-
- 			/*	var str = $("companies/new #company_name").text();			
-				 $('#information h3').html(str);
-				 $('#information h3').load(str);  */
-
-				 $('#information').load('companies/new #company_blurb');
-				
-
-								//alert("Data Loaded: " + data);
-				});
-
-			
+				// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
+				//alert(this.firstChild.data)
+				$('#information').load('companies/' + this.firstChild.data + '/blurb');
+                                //$('#information').load('companies/frogface/blurb');
 			}
 		); 
  });

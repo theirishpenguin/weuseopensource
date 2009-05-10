@@ -6,7 +6,7 @@ require 'dm-validations'
 require 'dm-timestamps'
 require 'uuidtools'
 require 'rack-flash'
-#require 'ruby-debug'
+require 'ruby-debug'
 
 enable :methodoverride
 enable :sessions
@@ -128,6 +128,12 @@ get '/companies/new' do
   @industry_list = @@industry_list
   @usage_level_list = @@usage_level_list
   erb :new
+end
+
+#TODO: Make RESTful
+get '/companies/:name/blurb' do
+    @company = Company.first(:name => params[:name])
+    erb(:blurb, :layout => false)
 end
 
 post '/companies' do
