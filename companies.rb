@@ -217,7 +217,7 @@ put '/companies/:uuid' do
 
       redirect '/'
     else
-      erb :new
+      erb :edit
     end
 
   else #TODO: Change from exception
