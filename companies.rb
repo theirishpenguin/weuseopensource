@@ -116,6 +116,22 @@ end
 ### ### ### ### ### ###
 
 
+
+
+
+### company_summaries ###
+
+get '/company_summaries/:name' do
+    @company = Company.first(:name => params[:name])
+    erb(:'company_summaries/show', :layout => false)
+end
+
+### ### ### ### ### ###
+
+
+
+
+
 ### weuseopensource ###
 
 get '/' do
@@ -128,12 +144,6 @@ get '/companies/new' do
   @industry_list = @@industry_list
   @usage_level_list = @@usage_level_list
   erb :new
-end
-
-#TODO: Make RESTful
-get '/companies/:name/blurb' do
-    @company = Company.first(:name => params[:name])
-    erb(:blurb, :layout => false)
 end
 
 post '/companies' do

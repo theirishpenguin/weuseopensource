@@ -54,9 +54,7 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 				$('#companies a').removeClass('selected');
 				$(this).addClass('selected');	
 				// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
-				//alert(this.firstChild.data)
-				$('#information').load('companies/' + this.firstChild.data + '/blurb');
-                                //$('#information').load('companies/frogface/blurb');
+				$('#information').load('company_summaries/' + this.firstChild.data);
 			}
 		); 
  });
