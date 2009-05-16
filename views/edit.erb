@@ -1,10 +1,10 @@
-<div id="contain">
 
-  <form action="/companies/<%= @company.uuid %>" method="POST" id="companyDetails" class="clearfix">
-    <input type="hidden" name="_method" value="put" />
+
+  <form action="/companies/<%= @company.uuid %>" method="post" id="companyDetails" class="clearfix">
+   <fieldset> <input type="hidden" name="_method" value="put" /> </fieldset>
 
 
 <%= erb(:form, :layout => false) %>
+	</fieldset>
   </form>
-</div>
-
+<div id = "newBottom"><div></div></div>

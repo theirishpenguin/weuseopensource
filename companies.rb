@@ -16,9 +16,9 @@ use Rack::Flash
 # Define a method called send_confirmation email to send email your own prefered way
 # in a file called emailconfig.rb file in the current directory and set MAILER_ENABLED
 # to true. Otherwise, this require statement should be commented out
-#require 'emailconfig'
+require 'emailconfig'
 
-MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
+MAILER_ENABLED = true # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'
 load 'industry_list.rb' # Pulls in a list of industries simply defines @@industry_list
 
@@ -168,6 +168,13 @@ get '/companies/new' do
   erb :new
 end
 
+
+get '/companies/:handle' do
+  @company = Company.first(:handle => params[:handle])
+  erb :show
+end
+
+
 post '/companies' do
   @industry_list = @@industry_list
   @usage_level_list = @@usage_level_list
@@ -270,10 +277,10 @@ helpers do
     "<select name=\"#{resource_name}_#{field_name}\">#{html}</select>"
   end
 
-  def wrap_text(txt, col = 20)
-    txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
-      "\\1\\3<br />") 
-  end
+#  def wrap_text(txt, col = 20)
+#    txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
+#      "\\1\\3<br />") 
+#  end
 
 end
 

@@ -1,50 +1,32 @@
-
-
 	<div id = 'headerContent'>
-		<div id="headerTop"> <div></div> </div> <!-- hold bg images for top curvi corners ->
+		<div id="headerTop"> <div></div> </div> <!--hold bg images for top curvi corners-->
 		<p>Knowing what other <span class = 'important'>companies</span> are in your ecosystem is important. This is no different in <span class = 'important'>Open Source</span>. You can make contacts, learn about new services and group together to reduce training costs or collaborate with each other.This is why it's key that we create a <span class = 'important'>community</span> of Open Source companies to help drive <span class = 'important'>innovation</span> and develop new exciting opportunities together.  </p>
-<!-- hold bg images for curvi corners ->
-		<div id="headerBottom"> <div></div> </div>
-	
+		<div id="headerBottom"> <div></div> </div><!--hold bg images for curvi corners-->
 	</div>	
-
-
-	<div id = "contentMain" class ='floatLeft margin20L'>	<!-- hold bg images for top curvi corners ->
-		<div id="CMtop"><div></div></div>	
-		<input type = 'text' value = 'search me!' class="margin10L">  </>
-		<%
-		  output = '<ul id = "companies" class="padding10">'
-		  @companies.each {|c| output << "<li id=\"#{c.handle}\"><a>#{h(c.name)} <small><b>#{h(c.business_category_text)}</b></small >#{h(c.usage_level_text)}</a></li>" }
-		  output << '</ul>'
-		%>
-		<%= output %>
-		
-
-</ul>	
-<div id="CMbottom"><div></div></div>  <!-- hold bg images for bottom curvi corners ->
-	</div>
-		
+	<div id = "contentMain" class ='floatLeft margin20L'>	
+		<div id="CMtop"><div></div></div>	<!--hold bg images for top curvi corners-->	
+			<%
+			  output = '<ul id = "companies" class="padding10">'
+			  @companies.each {|c| output << "<li id=\"#{c.handle}\"><a><b>#{h(c.name)}</b> <span>::#{h(c.business_category_text)}</span><span>::#{h(c.usage_level_text)}</span></a></li>" }
+			  output << '</ul>'
+			%>
+			<%= output %>	
+		<div id="CMbottom"><div></div></div>  <!--hold bg images for bottom curvi corners-->
+	</div>		
 	<div id = "contentSecondary" class ='floatLeft clearfix margin20L'>
 		<div class = 'margin20B'>
-			<a id = 'register' href='/companies/new'> <%= 'Create a new company' %> </a>
-			
+			<a id = 'register' href='/companies/new'> <%= 'Create a new company' %> </a>			
 		</div>
 		<div id = 'information'>
-			<div id="infoTop"> <div></div></div><!-- hold bg images for top curvi corners ->
-			<h3>How to use this site</h3>
-			<div>
-			<p>Some great companies using Open Source Technology are listed on the left. Select a company to bring up a short description here.</p>
-			<p>You can join too! If your company uses, develops or deals in Open Source software become part of the community today!</p>
+			<div id="infoTop"> <div></div></div><!--hold bg images for top curvi corners-->
+				<div id = "loader">
+				<h3>How to use this site</h3>			
+				<p>Some great companies using Open Source Technology are listed on the left. Select a company to bring up a short description here.</p><p>You can join too! If your company uses, develops or deals in Open Source software become part of the community today!</p>
+				</div>
+			<div id="infoBottom"> <div></div></div><!--hold bg images for bottom curvi corners-->
+		</div>
+	</div> 	
 
-<div id="infoBottom"> <div></div></div><!-- hold bg images for bottom curvi corners ->
-</div>
-		</div> 	
-
-
-
-<ul>
-
-	</div>
 
 
 <script type="text/javascript" >	
@@ -54,7 +36,8 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 				$('#companies a').removeClass('selected');
 				$(this).addClass('selected');	
 				// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
-				$('#information').load('company_summaries/' + this.parentNode.id);
+				$('#loader').load('company_summaries/' + this.parentNode.id);
+				//need to load compnay name into 
 			}
 		); 
  });

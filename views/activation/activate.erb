@@ -1,6 +1,12 @@
-<div>
-  <form action="/activation/<%= @company.uuid %>" method="POST">
-    You're nearly there! Please click <input type="submit" value="activate"/> to confirm your account.
-  </form>
-</div>
+
+<div id = 'headerContent'>
+	<div id="headerTop"> <div></div> </div> <!--hold bg images for top curvi corners-->
+		<form action="/activation/<%= @company.uuid %>" method="post" class = "padding10">
+   		<p class = "center"> You're nearly there! Please click <input type="submit" value="activate" class= "padding5"/> to confirm your account.</p>
+ 		 </form>
+	<div id="headerBottom"> <div></div> </div><!--hold bg images for curvi corners-->
+		
+</div>	
+
+
 
