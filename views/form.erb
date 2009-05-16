@@ -1,8 +1,9 @@
+<div id = "newTop"><div></div></div>
 <fieldset id="part1">	
    <label for "company_name">Name </label> <input type="text" name="company_name" id="company_name" value="<%=h @company.name %>"></input><br/>
-   <%= select('company', 'business_category', @industry_list, "#{@company.business_category}") %>
+   <%= select('company', 'business_category_id', @industry_list, "#{@company.business_category_id}") %>
 	<br />
-	We  <%= select('company', 'usage_level', @usage_level_list, "#{@company.usage_level}") %>  Open Source
+	We  <%= select('company', 'usage_level_id', @usage_level_list, "#{@company.usage_level_id}") %>  Open Source
    <label for "company_website"> Website http:// </label> <input type="text" name="company_website" id="company_website" value="<%=h @company.website %>"></input>
 
   <label for "company_email"> Company Email </label> <input type="text" name="company_email" id="company_email" value="<%=h @company.company_email %>"></input>
@@ -10,9 +11,25 @@
 
     <label for "admin_email"> Administrative Email </label> <input type="text" name="admin_email" id="admin_email" value="<%=h @company.admin_email %>"></input>
 
-    <label for "company_blurb">Blurb</label> <textarea name="company_blurb" id="company_blurb"><%=h @company.blurb %></textarea>
+    <label for "company_blurb"> Blurb (<span id="company_blurbDown"> n </span> <span>characters left no newlines or tabs</span> )</label> <textarea name="company_blurb" id="company_blurb" maxLength="300"><%=h @company.blurb %></textarea>
+	
+ 
+
+<!--this is for jquery char plugin not implemented yet. Characters left: <span id="company_blurbDown"> n </span> -->
+
+
+
 </fieldset>
 <fieldset id="part2"> 
     <label for "company_description">Description </label><textarea  name="company_description" id="company_description" rows="20"><%=h @company.description %></textarea>
 <label for "save"> Please ensure that all items are completed before pressing send </label>
 <input type="submit" value="Save" id="save"/>
+
+<!-- this aint working - whre is the field set ebing closed???? this div needs to be placed outside fieldset <div id = "newBottom">jj <div></div></div> --><!-- rounded corners bottom -->       
+
+
+<script type="text/javascript" >	
+  $(document).ready(function(){
+    $(":input[type=textarea]").textCounting();
+});
+</script>

@@ -28,7 +28,8 @@ load 'industry_list.rb' # Pulls in a list of industries simply defines @@industr
   {'3' => 'Sell'}].freeze
 
 module UuidHelper
-  def generate_uuid
+  def generate_unique_identifiers
+    self.handle = UUID.timestamp_create().to_s
     self.uuid = UUID.timestamp_create().to_s
   end
 end
@@ -38,13 +39,14 @@ DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/openlove.sqlite3")
 
 class Company
   include DataMapper::Resource, UuidHelper
-  before :create, :generate_uuid
+  before :create, :generate_unique_identifiers
 
 
+  property :handle, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :id, Integer, :serial => true
   property :website, String, :unique => true, :length => (1..100)
-  property :business_category, Integer, :nullable => false
-  property :usage_level, Integer, :nullable => false
+  property :business_category_id, Integer, :nullable => false
+  property :usage_level_id, Integer, :nullable => false
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
   property :name, String, :unique => true, :length => (1..60)
@@ -59,6 +61,9 @@ class Company
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
   validates_with_method :blurb, :method => :blurb_legal_character_check
   validates_with_method :description, :method => :description_legal_character_check
+
+  def business_category_text; @@industry_list[business_category_id].values.first; end
+  def usage_level_text; @@usage_level_list[usage_level_id - 1].values.first; end # -1 because index always 1 greater than value
 
   private
   def blurb_legal_character_check; legal_character_check('Blurb', blurb); end
@@ -138,8 +143,8 @@ end
 
 ### company_summaries ###
 
-get '/company_summaries/:name' do
-    @company = Company.first(:name => params[:name])
+get '/company_summaries/:handle' do
+    @company = Company.first(:handle => params[:handle])
     erb(:'company_summaries/show', :layout => false)
 end
 
@@ -168,8 +173,8 @@ post '/companies' do
   @usage_level_list = @@usage_level_list
 
   @company = Company.new(
-    :business_category => params[:company_business_category],
-    :usage_level => params[:company_usage_level],
+    :business_category_id => params[:company_business_category_id],
+    :usage_level_id => params[:company_usage_level_id],
     :website => params[:company_website],
     :name => params[:company_name],
     :blurb => params[:company_blurb],
@@ -211,8 +216,8 @@ put '/companies/:uuid' do
   if @company.status == :activated
 
     if @company.update_attributes(
-      :business_category => params[:company_business_category],
-      :usage_level => params[:company_usage_level],
+      :business_category_id => params[:company_business_category_id],
+      :usage_level_id => params[:company_usage_level_id],
       :website => params[:company_website],
       :blurb => params[:company_blurb],
       :name => params[:company_name],
@@ -263,6 +268,11 @@ helpers do
       html << "</option>"
     end
     "<select name=\"#{resource_name}_#{field_name}\">#{html}</select>"
+  end
+
+  def wrap_text(txt, col = 20)
+    txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
+      "\\1\\3<br />") 
   end
 
 end

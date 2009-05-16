@@ -14,7 +14,7 @@
 		<input type = 'text' value = 'search me!' class="margin10L">  </>
 		<%
 		  output = '<ul id = "companies" class="padding10">'
-		  @companies.each {|c| output << "<li><a>#{h(c.name)}</a></li>" }
+		  @companies.each {|c| output << "<li id=\"#{c.handle}\"><a>#{h(c.name)} <small><b>#{h(c.business_category_text)}</b></small >#{h(c.usage_level_text)}</a></li>" }
 		  output << '</ul>'
 		%>
 		<%= output %>
@@ -54,7 +54,7 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 				$('#companies a').removeClass('selected');
 				$(this).addClass('selected');	
 				// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
-				$('#information').load('company_summaries/' + this.firstChild.data);
+				$('#information').load('company_summaries/' + this.parentNode.id);
 			}
 		); 
  });
