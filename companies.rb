@@ -16,9 +16,9 @@ use Rack::Flash
 # Define a method called send_confirmation email to send email your own prefered way
 # in a file called emailconfig.rb file in the current directory and set MAILER_ENABLED
 # to true. Otherwise, this require statement should be commented out
-require 'emailconfig'
+#require 'emailconfig'
 
-MAILER_ENABLED = true # Set this to true if you have a valid mail configuration in emailconfig.rb
+MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
 DOMAIN = 'localhost:4567'
 load 'industry_list.rb' # Pulls in a list of industries simply defines @@industry_list
 
@@ -26,6 +26,11 @@ load 'industry_list.rb' # Pulls in a list of industries simply defines @@industr
   {'1' => 'Use'},
   {'2' => 'Develop'},
   {'3' => 'Sell'}].freeze
+
+@@max_business_category_id ||= @@industry_list.inject(0) do |memo,keys|
+    current = keys.first.first.to_i
+    current > memo ? current : memo
+end
 
 module UuidHelper
   def generate_unique_identifiers
@@ -63,6 +68,7 @@ class Company
   property :uuid, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :status, Enum[:pending, :notified, :activated, :suspended], :nullable => false
 
+  validates_within :business_category_id, :set => (1..@@max_business_category_id), :message => 'Please select an Industry Type'
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
   validates_with_method :blurb, :method => :blurb_legal_character_check
   validates_with_method :description, :method => :description_legal_character_check
