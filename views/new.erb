@@ -1,11 +1,41 @@
-<!--<div id="contain"> -->
 
-  <form action="/companies" method="post" id="companyDetails" class="clearfix">
-	  <%= erb(:form, :layout => false) %>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#companyDetails").validate();
+});
+</script>
+
+
+<form action="/companies" method="post" id="companyDetails" class="clearfix">
+	 
+<div id = "newTop"><div></div></div>
+<fieldset id="part1" class = "margin20B">	
+   <label for = "company_name">Company Name </label> <input type="text" name="company_name" id="company_name" class="required" value="<%=h @company.name %>" ></input>
+   <label>Industry Type:</label><%= select('company', 'business_category_id', @industry_list, "#{@company.business_category_id}") %>
+	
+	
+   <label for = "company_website">Company Website </label>
+  <span id ="url">http://www.</span><input type="text" name="company_website" id="company_website" class="required url" value="<%=h @company.website %>"></input>
+
+
+  <label for = "company_email"> Public Email </label> <input type="text" name="company_email" id="company_email" class="required email" value="<%=h @company.company_email %>"></input>
+    <label for= "admin_email"> Administrative Email<span> (must match website domain)</span></label> <input type="text" name="admin_email" class= "required email" id="admin_email" value="<%=h @company.admin_email %>"></input>
+</fieldset>
+<fieldset id="part2">   
+    <label for= "company_blurb"> Blurb (<span id="company_blurbDown"></span> <span>characters left - no newlines or tabs</span> )</label> <textarea name="company_blurb" id="company_blurb" maxLength="300" rows = "" cols = "" class= "required"><%=h @company.blurb %></textarea>
+<span class = "white">We  <%= select('company', 'usage_level_id', @usage_level_list, "#{@company.usage_level_id}") %>  Open Source </span>
+
 	</fieldset>
+<fieldset id = "part3">
+<label for= "save"> Please ensure that ALL items are completed before pressing save </label>
+<input type="submit" value="" id="save" title = "save"/>
+</fieldset>
   </form>
 <div id = "newBottom"><div></div></div>
+<script type="text/javascript" >
+  $(document).ready(function(){
+    $(":input[type=textarea]").textCounting();
+});
 
-
-
+</script>
 

@@ -1,12 +1,44 @@
+
+
 <div id = "companyDetails">
 	<div id = "newTop"><div></div></div>
-		<div class = "padding10Sides">
-		  Company Name <%= @company.name %><br />
-		  Company Blurb <%= @company.blurb %><br />
-		  Company Description <%= @company.description %><br />
-		  Company Business Category <%= @company.business_category_text %><br />
-		  Company Usage Level <%= @company.usage_level_text %><br />
-		  Company Email <%= @company.company_email %><br />
-		</div>
-	<div id = "newBottom"><div></div></div>
+		<div>
+			<div class="clearfix">
+				<h4> <%= @company.name %> </h4>
+				<div id = "part1">
+					<dl>					
+						<dt>Business Category:</dt><dd><%= @company.business_category_text %></dd>
+					  	<dt>Usage Level:</dt><dd><%= @company.usage_level_text %></dd>
+						<dt>Company Website:</dt><dd class= "inline">http://www.</dd><dd id ="website"><%=@company.website %></dd>
+					  	<dt>Email:</dt><dd><%= @company.company_email %></dd> 
+					</dl>
+				</div>
+				<div id = "part2" >
+					<h5>Blurb:</h5><%= @company.blurb %>
+				  					  	
+				</div>
+			</div>
+
+			<input type = "button" class = "margin25L margin20T" id="button" value = "Advanced Profile"/>
+  		 	<div id = "extra">
+				<dl>
+					<dt>Telephone:</dt><dd><%= @company.company_telephone %></dd>
+					<dt>Address:</dt><dd class="inline"><%= @company.company_address1%></dd>
+					<dd class = "inline"> <%= @company.company_address2%></dd><dd class = "inline"> <%= @company.company_address3%></dd> 
+				</dl>
+		  	<h5>Description:</h5><div><%= @company.description %></div>		
+		 	</div>	
 </div>
+			<div id = "newBottom"><div></div></div>
+		</div>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function(){	
+      $("#extra").hide();
+      $("#button").click(function () {
+      $("#extra").slideToggle("slow");
+      });
+  });
+  </script> 

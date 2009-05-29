@@ -1,10 +1,81 @@
+<script type="text/javascript">
+  $(document).ready(function(){	
+      $("#optional1").hide();
+      $("#optional2").hide();
+      $("#button").click(function () {
+      $("#optional1").slideToggle("slow");
+      $("#optional2").slideToggle("slow"); 
+    });
+  });
+  </script> 
+
+ <script type="text/javascript">
+  $(document).ready(function() {
+    $("#companyDetails").validate({
+      rules: {
+        company_blurb: {
+          required: true,
+          rangelength: [1, 300]
+        }
+      }
+    });
+  });
+  </script>
+
+<script type="text/javascript">
+/*$(document).ready(function() {
+	$("#companyDetails").validate();
+});*/
+</script>
 
 
-  <form action="/companies/<%= @company.uuid %>" method="post" id="companyDetails" class="clearfix">
-   <fieldset> <input type="hidden" name="_method" value="put" /> </fieldset>
+<form action="/companies/<%= @company.uuid %>" method="post" id="companyDetails" class="clearfix">
+<div id = "newTop"><div></div></div>
+<fieldset id="part1" class = "marginB20">	
+   <label for = "company_name">Company Name </label> <input type="text" name="company_name" id="company_name" class="required" value="<%=h @company.name %>" />
+  <label>Industry Type:</label> <%= select('company', 'business_category_id', @industry_list, "#{@company.business_category_id}") %>
 
+	
+   <label for = "company_website">Company Website </label>
 
-<%= erb(:form, :layout => false) %>
+  <span id = "url">http://www.</span><input type="text" name="company_website" id="company_website" class="required url" value="<%=h @company.website %>"></input>
+  <label for = "company_email"> Public Email </label> <input type="text" name="company_email" id="company_email" class="required email" value="<%=h @company.company_email %>" />
+    <label for= "admin_email"> Administrative Email<span> (must match website domain)</span></label> <input type="text" name="admin_email" id="admin_email" class="required email" value="<%=h @company.admin_email %>"/>
+</fieldset>
+<fieldset id="part2">   
+    <label for= "company_blurb"> Blurb (<span id="company_blurbDown"></span><span> characters left - no newlines or tabs</span> )</label>   <textarea name="company_blurb" id="company_blurb" class="required" maxLength="300" rows="" cols="" ><%=h @company.blurb %></textarea>
+<span class = "white">We  <%= select('company', 'usage_level_id', @usage_level_list, "#{@company.usage_level_id}") %>  Open Source</span>
 	</fieldset>
+
+
+<hr/>
+<fieldset id = "buttonHolder"><input type = "button" class = "margin25L margin20B" id="button" value = "Advanced Profile"/></fieldset>
+<fieldset id="optional1"> 
+	
+	<p>If you would like to take the time to provide some additional optional information on your company we will be happy to display it!</p>
+ 	<label for= "company_telephone">Company Telephone</label> <input type="text" name="company_telephone" id="company_telephone"  	class="phone" value="<%=h @company.company_telephone %>"/>
+ 	<label for= "company_address1">Company Address</label> <input type="text" name="company_address1" id="company_address1" value="<%=h @company.company_address1%>" />
+	<input type="text" name="company_address2" id="company_address2" value="<%=h @company.company_address2%>" />
+	<input type="text" name="company_address3" id="company_address3" value="<%=h @company.company_address3%>" /> 
+</fieldset>
+<fieldset id="optional2"> 
+<label for= "company_description">Description (<span id="company_descriptionDown"></span><span> characters left - no newlines or tabs</span> )</label><textarea  name="company_description" id="company_description" maxLength="800" rows="20" cols = ""><%=h @company.description %></textarea>
+</fieldset>
+
+<hr/>
+<fieldset id = "part3">
+<label for= "save"> Please ensure that ALL mandatory items are completed before pressing save </label>
+<input type="submit" value="" id="save" title="save"/>
+</fieldset>
+ <fieldset> <input type="hidden" name="_method" value="put" /> </fieldset>
   </form>
+
+<script type="text/javascript" >
+  $(document).ready(function(){
+    $(":input[type=textarea]").textCounting();
+});
+
+</script> 
+
 <div id = "newBottom"><div></div></div>
+

@@ -7,12 +7,27 @@
    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css"/>
   <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
-  <!--[if IE]>
+  <!--[if IE 7]>
       <link href="/stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <![endif]-->
   <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="/scripts/jquery.js"></script>
-<script type="text/javascript" src="/scripts/jquery.textCounting.min.js"></script>
+	<script type="text/javascript" src="/scripts/jquery.js"></script>
+	<script type="text/javascript" src="/scripts/jquery.textCounting.min.js"></script>
+	<script type="text/javascript" src="/scripts/jquery.validate.js"></script>
+       <script type="text/javascript" src="/scripts/validateTelephone.js"></script>
+ 
+      <!--[if lte IE 6]> 
+      <script type="text/javascript">  
+      //Fix IE6 background image flicker
+      function fixIE6flicker(fix) {
+        try {  
+      document.execCommand("BackgroundImageCache", false, fix);  
+      } catch(err) { }   
+      }   
+      window.onload = function() { fixIE6flicker(true); } 
+      </script> 
+      <![endif]-->
+     
 </head>
 
 
@@ -24,13 +39,29 @@
 <% end %>
 
 <div id = 'contain' class = 'clearfix'>
-	<div id = 'logo'>
+	<a href="<%= "http://#{DOMAIN}" %>" id = 'logo' title = "click to go Home">
 		
-	</div>
+	</a>
 <%= yield %>
 
 </div>
 <%= erb(:footer, :layout => false) %>
+<script type="text/javascript">
+  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
+  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
+</script>
+<script type="text/javascript">
+UserVoice.Tab.show({ 
+  key: 'weuseopensource',
+  host: 'weuseopensource.uservoice.com', 
+  forum: 'general', 
+  alignment: 'left',
+  background_color:'#f00', 
+  text_color: 'white',
+  hover_color: '#06C',
+  lang: 'en'
+})
+</script>
 </body>
 </html>
 

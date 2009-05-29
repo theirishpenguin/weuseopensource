@@ -29,7 +29,8 @@ load 'industry_list.rb' # Pulls in a list of industries simply defines @@industr
 
 module UuidHelper
   def generate_unique_identifiers
-    self.handle = UUID.timestamp_create().to_s
+    #needs to start with a letter for use in javascript ids(w3c validation)
+    self.handle = "p_#{UUID.timestamp_create()}"
     self.uuid = UUID.timestamp_create().to_s
   end
 end
@@ -49,9 +50,13 @@ class Company
   property :usage_level_id, Integer, :nullable => false
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
+  property :company_telephone, String, :length => (0..60)
+  property :company_address1, String, :length => (0..60)
+  property :company_address2, String, :length => (0..60)   
+  property :company_address3, String, :length => (0..60)
   property :name, String, :unique => true, :length => (1..60)
   property :blurb, String, :length => (1..300)
-  property :description, Text, :length => (1..2000)
+  property :description, Text, :length => (0..2000)
   property :created_at, DateTime
   property :updated_at, DateTime
   property :activated_at, DateTime, :default => nil
@@ -187,6 +192,10 @@ post '/companies' do
     :blurb => params[:company_blurb],
     :description => params[:company_description],
     :company_email => params[:company_email],
+    :company_telephone => params[:company_telephone],
+    :company_address1 => params[:company_address1],
+    :company_address2 => params[:company_address2],
+    :company_address3 => params[:company_address3],
     :admin_email => params[:admin_email],
     :status => :pending)
 
@@ -230,6 +239,10 @@ put '/companies/:uuid' do
       :name => params[:company_name],
       :description => params[:company_description],
       :company_email => params[:company_email],
+      :company_telephone => params[:company_telephone],
+      :company_address1 => params[:company_address1],
+      :company_address2 => params[:company_address2],
+      :company_address3 => params[:company_address3],
       :admin_email => params[:admin_email])
 
       redirect '/'
@@ -268,8 +281,8 @@ helpers do
     options_list.each do |nv_pair|
       option_value = nv_pair.keys.first
       option_name = nv_pair.values.first
-      html << "<option value=\"#{option_value}\""
-      html << " selected=\"true\"" if option_value == selected_value
+      html << "<option class=\"required\" value=\"#{option_value}\""
+     # html << " selected=\"true\"" if option_value == selected_value
       html << '>'
       html << option_name
       html << "</option>"
