@@ -32,6 +32,11 @@ load 'industry_list.rb' # Pulls in a list of industries simply defines @@industr
     current > memo ? current : memo
 end
 
+@@max_usage_level_id ||= @@usage_level_list.inject(0) do |memo,keys|
+    current = keys.first.first.to_i
+    current > memo ? current : memo
+end
+
 module UuidHelper
   def generate_unique_identifiers
     #needs to start with a letter for use in javascript ids(w3c validation)
@@ -51,8 +56,8 @@ class Company
   property :handle, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :id, Integer, :serial => true
   property :website, String, :unique => true, :length => (1..100)
-  property :business_category_id, Integer, :nullable => false
-  property :usage_level_id, Integer, :nullable => false
+  property :business_category_id, Integer
+  property :usage_level_id, Integer
   property :company_email, String, :nullable => false, :format => :email_address, :unique => true
   property :admin_email, String, :nullable => false, :format => :email_address, :unique => true
   property :company_telephone, String, :length => (0..60)
@@ -68,7 +73,10 @@ class Company
   property :uuid, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :status, Enum[:pending, :notified, :activated, :suspended], :nullable => false
 
-  validates_within :business_category_id, :set => (1..@@max_business_category_id), :message => 'Please select an Industry Type'
+  validates_within :business_category_id, :set => (1..@@max_business_category_id),
+	  :message => 'Please select an Industry Type' # Implicitly cannot be blank
+  validates_within :usage_level_id, :set => (1..@@max_usage_level_id),
+	  :message => 'Please select a Usage Level' # Implicitly cannot be blank
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
   validates_with_method :blurb, :method => :blurb_legal_character_check
   validates_with_method :description, :method => :description_legal_character_check
@@ -92,10 +100,7 @@ class Company
     email_domain = admin_email.split('@')[1]
 
     unless email_domain.blank? or website.blank?
-      website_domain = website
-      website_domain = website[4, website.length] if website.start_with? 'www.'
-
-      consistency = true if email_domain == website_domain
+      consistency = true if email_domain == website
     end
 
     consistency
@@ -287,13 +292,13 @@ helpers do
     options_list.each do |nv_pair|
       option_value = nv_pair.keys.first
       option_name = nv_pair.values.first
-      html << "<option class=\"required\" value=\"#{option_value}\""
-     # html << " selected=\"true\"" if option_value == selected_value
+      html << "<option value=\"#{option_value}\""
+      html << " selected=\"true\"" if option_value == selected_value
       html << '>'
       html << option_name
       html << "</option>"
     end
-    "<select name=\"#{resource_name}_#{field_name}\">#{html}</select>"
+    "<select name=\"#{resource_name}_#{field_name}\" class=\"required\">#{html}</select>"
   end
 
 #  def wrap_text(txt, col = 20)

@@ -1,7 +1,20 @@
+<script type="text/javascript">
+	jQuery.validator.addMethod("emailAndWebsiteDomainsMatch", function(value, element) {
+//TODO: Parameterise me better
+			    return this.optional(element) || value.split('@')[1] == $("input#company_website")[0].value;
+			    }, "The domain of the Admin Email and Company Website must match");
+</script>
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$("#companyDetails").validate();
+	$("#companyDetails").validate(
+{
+				rules : {
+			        admin_email : { emailAndWebsiteDomainsMatch : true }
+			    }
+
+			}
+);
 });
 </script>
 
@@ -27,7 +40,7 @@ $(document).ready(function() {
 
 	</fieldset>
 <fieldset id = "part3">
-<label for= "save"> Please ensure that ALL items are completed before pressing save </label>
+<label for= "save"> Please ensure that all items are completed before pressing save </label>
 <input type="submit" value="" id="save" title = "save"/>
 </fieldset>
   </form>
