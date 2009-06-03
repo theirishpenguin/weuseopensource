@@ -22,6 +22,9 @@ MAILER_ENABLED = false # Set this to true if you have a valid mail configuration
 DOMAIN = 'localhost:4567'
 load 'industry_list.rb' # Pulls in a list of industries simply defines @@industry_list
 
+# List of domains that cannot signup without extra verifying of their authenticity
+require 'suspicious_domains'
+
 @@usage_level_list = [
   {'1' => 'Use'},
   {'2' => 'Develop'},
@@ -80,6 +83,7 @@ class Company
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
   validates_with_method :blurb, :method => :blurb_legal_character_check
   validates_with_method :description, :method => :description_legal_character_check
+  validates_with_method :domain, :method => :suspicious_domain_check
 
   def business_category_text; @@industry_list[business_category_id].values.first; end
   def usage_level_text; @@usage_level_list[usage_level_id - 1].values.first; end # -1 because index always 1 greater than value
@@ -104,6 +108,19 @@ class Company
     end
 
     consistency
+  end
+
+  def suspicious_domain_check
+    result = true
+
+    @@suspicious_domain_list.each do |sus_domain|
+       if website.match(sus_domain)
+         result = [false, 
+           "As you're a star company, we'd like to take an extra step to verify your authenticity. Please email webmaster@#{DOMAIN} to sign up instead of this form."]
+       end
+    end
+
+    result
   end
 end
 
