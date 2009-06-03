@@ -27,15 +27,15 @@ load 'industry_list.rb' # Pulls in a list of industries simply defines @@industr
   {'2' => 'Develop'},
   {'3' => 'Sell'}].freeze
 
-@@max_business_category_id ||= @@industry_list.inject(0) do |memo,keys|
-    current = keys.first.first.to_i
-    current > memo ? current : memo
+def get_max_id(list)
+    list.inject(0) do |memo,keys|
+        current = keys.first.first.to_i
+        current > memo ? current : memo
+    end
 end
 
-@@max_usage_level_id ||= @@usage_level_list.inject(0) do |memo,keys|
-    current = keys.first.first.to_i
-    current > memo ? current : memo
-end
+@@max_business_category_id ||= get_max_id(@@industry_list)
+@@max_usage_level_id ||= get_max_id(@@usage_level_list)
 
 module UuidHelper
   def generate_unique_identifiers
@@ -298,13 +298,8 @@ helpers do
       html << option_name
       html << "</option>"
     end
-    "<select name=\"#{resource_name}_#{field_name}\" class=\"required\">#{html}</select>"
+    "<select id=\"#{resource_name}_#{field_name}\" name=\"#{resource_name}_#{field_name}\" class=\"required\">#{html}</select>"
   end
-
-#  def wrap_text(txt, col = 20)
-#    txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
-#      "\\1\\3<br />") 
-#  end
 
 end
 
