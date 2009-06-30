@@ -1,13 +1,21 @@
+<script type="text/javascript">
+    $(document).ready(function() {  
+        $("img.title").easyTooltip();
+    });
+</script>
+
 	<div id = 'headerContent'>
 		<div id="headerTop"> <div></div> </div> <!--hold bg images for top curvi corners-->
 		<p>Knowing what other <span class = 'important'>companies</span> are in your ecosystem is important. This is no different in <span class = 'important'>Open Source</span>. You can make contacts, learn about new services and group together to reduce training costs or collaborate with each other.This is why it's key that we create a <span class = 'important'>community</span> of Open Source companies to help drive <span class = 'important'>innovation</span> and develop new exciting opportunities together.  </p>
+	
+
 		<div id="headerBottom"> <div></div> </div><!--hold bg images for curvi corners-->
 	</div>	
 	<div id = "contentMain" class ='floatLeft margin20L'>	
-		<div id="CMtop"><div></div></div>	<!--hold bg images for top curvi corners-->	
-			<%
-			  output = '<ul id = "companies" class="padding10">'
-			  @companies.each {|c| output << "<li id=\"#{c.handle}\"><a><b>#{h(c.name)}</b> <span>::#{h(c.business_category_text)}</span><span>::#{h(c.usage_level_text)}</span></a></li>" }
+		<div id="CMtop"><div></div></div>	<!--hold bg images for top curvi corners-->
+		    <%
+              output = '<ul id = "companies" class="padding10">'
+			  @companies.each {|c| output << %{<li id="#{c.handle}"><a>#{image_for_usage_level(c.usage_level_id)}<span>#{h(c.business_category_text)}</span><b>#{h(c.name)}</b>   </a></li>} }
 			  output << '</ul>'
 			%>
 			<%= output %>	

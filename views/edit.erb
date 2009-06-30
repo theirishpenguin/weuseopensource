@@ -1,4 +1,25 @@
 <script type="text/javascript">
+	jQuery.validator.addMethod("emailAndWebsiteDomainsMatch", function(value, element) {
+                //TODO: Parameterise me better
+			    return this.optional(element) || value.split('@')[1] == $("input#company_website")[0].value;
+			    }, "The domain of the Admin Email and Company Website must match");
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#companyDetails").validate(
+{
+				rules : {
+			        admin_email : { emailAndWebsiteDomainsMatch : true }
+			    }
+
+			}
+);
+});
+</script>
+
+
+<script type="text/javascript">
   $(document).ready(function(){	
       $("#optional1").hide();
       $("#optional2").hide();
@@ -9,23 +30,10 @@
   });
   </script> 
 
- <script type="text/javascript">
-  $(document).ready(function() {
-    $("#companyDetails").validate({
-      rules: {
-        company_blurb: {
-          required: true,
-          rangelength: [1, 300]
-        }
-      }
-    });
-  });
-  </script>
-
 <script type="text/javascript">
-/*$(document).ready(function() {
+$(document).ready(function() {
 	$("#companyDetails").validate();
-});*/
+});
 </script>
 
 
@@ -39,8 +47,9 @@
    <label for = "company_website">Company Website </label>
 
   <span id = "url">http://www.</span><input type="text" name="company_website" id="company_website" class="required url" value="<%=h @company.website %>"></input>
-  <label for = "company_email"> Public Email </label> <input type="text" name="company_email" id="company_email" class="required email" value="<%=h @company.company_email %>" />
-    <label for= "admin_email"> Administrative Email<span> (must match website domain)</span></label> <input type="text" name="admin_email" id="admin_email" class="required email" value="<%=h @company.admin_email %>"/>
+   <label for= "admin_email"> Admin Email<span> (private, must match website domain)</span></label> <input type="text" name="admin_email" id="admin_email" class="required email" value="<%=h @company.admin_email %>"/> 	
+  <label for = "company_email"> Public Company Email<span> (will be visible to all)</span> </label> <input type="text" name="company_email" id="company_email" class="required email" value="<%=h @company.company_email %>" />
+ 
 </fieldset>
 <fieldset id="part2">   
     <label for= "company_blurb"> Blurb (<span id="company_blurbDown"></span><span> characters left - no newlines or tabs</span> )</label>   <textarea name="company_blurb" id="company_blurb" class="required" maxLength="300" rows="" cols="" ><%=h @company.blurb %></textarea>

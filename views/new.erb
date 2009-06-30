@@ -29,10 +29,10 @@ $(document).ready(function() {
 	
    <label for = "company_website">Company Website </label>
   <span id ="url">http://www.</span><input type="text" name="company_website" id="company_website" class="required url" value="<%=h @company.website %>"></input>
+    <label for= "admin_email"> Admin Email<span> (private, must match website domain)</span></label> <input type="text" name="admin_email" class= "required email" id="admin_email" value="<%=h @company.admin_email %>"></input>
 
+  <label for = "company_email"> Public Company Email<span> (will be visible to all)</span> </label> <input type="text" name="company_email" id="company_email" class="required email" value="<%=h @company.company_email %>"></input>
 
-  <label for = "company_email"> Public Email </label> <input type="text" name="company_email" id="company_email" class="required email" value="<%=h @company.company_email %>"></input>
-    <label for= "admin_email"> Administrative Email<span> (must match website domain)</span></label> <input type="text" name="admin_email" class= "required email" id="admin_email" value="<%=h @company.admin_email %>"></input>
 </fieldset>
 <fieldset id="part2">   
     <label for= "company_blurb"> Blurb (<span id="company_blurbDown"></span> <span>characters left - no newlines or tabs</span> )</label> <textarea name="company_blurb" id="company_blurb" maxLength="300" rows = "" cols = "" class= "required"><%=h @company.blurb %></textarea>

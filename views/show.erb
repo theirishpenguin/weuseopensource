@@ -10,7 +10,9 @@
 						<dt>Business Category:</dt><dd><%= @company.business_category_text %></dd>
 					  	<dt>Usage Level:</dt><dd><%= @company.usage_level_text %></dd>
 						<dt>Company Website:</dt><dd class= "inline">http://www.</dd><dd id ="website"><%=@company.website %></dd>
-					  	<dt>Email:</dt><dd><%= @company.company_email %></dd> 
+					 
+						<dt>Email:</dt><dd><%= @company.company_email.gsub('@', '<img id="at" src="/images/at.gif" height="14" width="14" alt="[at]"/>')%></dd> 
+						
 					</dl>
 				</div>
 				<div id = "part2" >

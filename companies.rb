@@ -136,8 +136,8 @@ get '/activation/:uuid/new' do
 
   if @company.status == :notified
     erb :'activation/activate'
-  elsif @company.status == :activated # TODO: Change from exception
-    raise 'Your account is already active.'
+  elsif @company.status == :activated
+    redirect "/companies/#{params[:uuid]}/edit"
   else #TODO: Change from exception
     raise 'Your account cannot be activated.'
   end
@@ -310,12 +310,22 @@ helpers do
       option_value = nv_pair.keys.first
       option_name = nv_pair.values.first
       html << "<option value=\"#{option_value}\""
-      html << " selected=\"true\"" if option_value == selected_value
+      html << " selected=\"selected\"" if option_value == selected_value
       html << '>'
       html << option_name
       html << "</option>"
     end
     "<select id=\"#{resource_name}_#{field_name}\" name=\"#{resource_name}_#{field_name}\" class=\"required\">#{html}</select>"
+  end
+
+  def image_for_usage_level(usage_level_id)
+    case usage_level_id
+    when 1: filename = 'badgeU.png'; title='User'
+    when 2: filename = 'badgeD.png'; title='Developer'
+    when 3: filename = 'badgeS.png'; title='Seller'
+    end
+
+    %{<img class="title" src="images/#{filename}" alt = "#{title}" title="Open Source #{title}" width="27px" height="28px" />}
   end
 
 end
