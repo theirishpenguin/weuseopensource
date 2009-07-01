@@ -1,0 +1,7 @@
+		<% output = '<ul id = "companies" class="padding10">'
+			  @companies.each {|c| output << %{<li id="#{c.handle}"><a>#{image_for_usage_level(c.usage_level_id)}<span>#{h(c.business_category_text)}</span><b>#{h(c.name)}</b>   </a></li>} }
+			  output << '</ul>'
+			%>
+			<%= output %>	
+<span id="companies_counter"></span>
+		<ul id ="pagination"><li>Prev</li><li>Next</li></ul>

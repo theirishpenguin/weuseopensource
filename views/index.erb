@@ -1,9 +1,3 @@
-<script type="text/javascript">
-    $(document).ready(function() {  
-        $("img.title").easyTooltip();
-    });
-</script>
-
 	<div id = 'headerContent'>
 		<div id="headerTop"> <div></div> </div> <!--hold bg images for top curvi corners-->
 		<p>Knowing what other <span class = 'important'>companies</span> are in your ecosystem is important. This is no different in <span class = 'important'>Open Source</span>. You can make contacts, learn about new services and group together to reduce training costs or collaborate with each other.This is why it's key that we create a <span class = 'important'>community</span> of Open Source companies to help drive <span class = 'important'>innovation</span> and develop new exciting opportunities together.  </p>
@@ -13,12 +7,18 @@
 	</div>	
 	<div id = "contentMain" class ='floatLeft margin20L'>	
 		<div id="CMtop"><div></div></div>	<!--hold bg images for top curvi corners-->
-		    <%
-              output = '<ul id = "companies" class="padding10">'
+ 	<input type="text" name="search" id="search" value="search company names"> <input type="submit" value="GO" id="go"/>
+ 		
+	<div id="listLoader">
+		<% output = '<ul id = "companies" class="padding10">'
 			  @companies.each {|c| output << %{<li id="#{c.handle}"><a>#{image_for_usage_level(c.usage_level_id)}<span>#{h(c.business_category_text)}</span><b>#{h(c.name)}</b>   </a></li>} }
 			  output << '</ul>'
 			%>
 			<%= output %>	
+        <span id="companies_counter"></span>
+		<ul id ="pagination"><li>Prev</li><li>Next</li></ul>
+        </div>
+
 		<div id="CMbottom"><div></div></div>  <!--hold bg images for bottom curvi corners-->
 	</div>		
 	<div id = "contentSecondary" class ='floatLeft clearfix margin20L'>
@@ -40,14 +40,44 @@
 
 <script type="text/javascript" >	
 $(document).ready(function(){// Get the value of the tab link, and display tbody
-	 $('#companies a').click(function()
-			{	// Switch class="selected" for list item links
-				$('#companies a').removeClass('selected');
-				$(this).addClass('selected');	
-				// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
-				$('#loader').load('company_summaries/' + this.parentNode.id);
-				//need to load compnay name into 
+	 $('#listLoader').click(function(e)
+			 {	
+			 	if ($(e.target).parent().is('a')) {
+
+			 		// Clear currently selected list item and select last clicked
+					$('#companies a').removeClass('selected');
+					$(e.target).parent().addClass('selected');	
+					
+					// Get the company identifier to lookup from parent <li> and
+					// ajax reload the blurb for that company
+					var company_identifier = $(e.target).parent().parent()[0].id
+					$('#loader').load('company_summaries/' + company_identifier);
+
+					// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
+
+				}
+
 			}
 		); 
  });
 </script>
+
+
+
+<script type="text/javascript" >	
+$(document).ready(function(){// Get the value of the tab link, and display tbody
+	 $('#go').click(function()
+			{
+                // Check and see if IE will cache me!
+				$('#listLoader').load('/filtered_companies/' + escape($('#search').val()));
+			}
+		); 
+ });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {  
+        $("img.title").easyTooltip();
+    });
+</script>
+

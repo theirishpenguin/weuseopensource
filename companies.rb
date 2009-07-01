@@ -194,6 +194,30 @@ get '/' do
   erb :index
 end
 
+get '/filtered_companies/*' do
+
+    # Note that the splat parameter (*) comes in as an array
+
+    stripped_search_string = params[:splat].first.strip 
+
+    if stripped_search_string.empty?
+        @companies =  Company.all
+    else
+        terms = stripped_search_string.split(' ')
+
+        # build query part of the conditions
+        conditions = [Array.new(terms.length, 'name LIKE ?').join(' OR ')]
+    
+        # add in query parameters
+        terms.each{|term| conditions << "%#{term}%"}
+
+        @companies =  Company.all(:conditions => conditions)    
+    end
+
+    erb(:'filtered_companies/index', :layout => false)
+end
+
+
 get '/companies/new' do
   @company = Company.new
   @industry_list = @@industry_list
