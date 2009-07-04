@@ -54,8 +54,8 @@ end
 module UuidHelper
   def generate_unique_identifiers
     #needs to start with a letter for use in javascript ids(w3c validation)
-    self.handle = "p_#{UUID.timestamp_create()}"
-    self.uuid = UUID.timestamp_create().to_s
+    self.handle = "p_#{UUID.random_create()}"
+    self.uuid = UUID.random_create().to_s
   end
 end
 
