@@ -1,0 +1,15 @@
+# Require any files your chosen emailer depends on here
+
+def send_confirmation_email(from, to, subject, body)
+    # PUT CODE TO SEND EMAIL HERE
+end
+
+
+def activation_email_body(activation_link, domain, support_email)
+    "Click the following link to activate your #{domain} account #{activation_link}"
+end
+
+
+def welcome_email_body(admin_link, domain, support_email)
+    #Your #{domain} account has been activated. Use the following link to manage your account #{admin_link}"
+end

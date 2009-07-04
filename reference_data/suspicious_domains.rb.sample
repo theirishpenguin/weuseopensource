@@ -1,0 +1,8 @@
+unless self.class.const_defined? 'SUSPICIOUS_DOMAIN_LIST'
+
+SUSPICIOUS_DOMAIN_LIST = [
+'some_domain\..*',
+'another_domain\..*'
+]
+
+end

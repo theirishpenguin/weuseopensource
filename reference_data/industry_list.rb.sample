@@ -1,0 +1,9 @@
+unless self.class.const_defined? 'INDUSTRY_LIST'
+
+INDUSTRY_LIST = [
+{'0' => 'Please select your business category'},
+{'1' => 'Software'},
+{'2' => 'Insurance'}
+]
+
+end

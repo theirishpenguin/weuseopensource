@@ -6,29 +6,33 @@ require 'dm-validations'
 require 'dm-timestamps'
 require 'uuidtools'
 require 'rack-flash'
+require 'config.rb'
 #require 'ruby-debug'
 
 enable :methodoverride
 enable :sessions
 use Rack::Flash
 
+# Optionally define a method called send_confirmation_email() to send
+# send in your own prefered way in a file called emailconfig.rb file in
+# the current directory
+load 'emailconfig.rb' if File.exists?('emailconfig.rb')
 
-# Define a method called send_confirmation email to send email your own prefered way
-# in a file called emailconfig.rb file in the current directory and set MAILER_ENABLED
-# to true. Otherwise, this require statement should be commented out
-#require 'emailconfig'
+# Defines SUSPICIOUS_DOMAIN_LIST - constant list of domains that cannot
+# signup without extra verifying of their authenticity
+require 'reference_data/suspicious_domains'
 
-MAILER_ENABLED = false # Set this to true if you have a valid mail configuration in emailconfig.rb
-DOMAIN = 'localhost:4567'
-load 'industry_list.rb' # Pulls in a list of industries simply defines @@industry_list
+# Defines INDUSTRY_LIST - constant list of industries
+load 'reference_data/industry_list.rb'
 
-# List of domains that cannot signup without extra verifying of their authenticity
-require 'suspicious_domains'
 
-@@usage_level_list = [
-  {'1' => 'Use'},
-  {'2' => 'Develop'},
-  {'3' => 'Sell'}].freeze
+unless self.class.const_defined? 'USAGE_LEVEL_LIST'
+  USAGE_LEVEL_LIST = [
+    {'1' => 'Use'},
+    {'2' => 'Develop'},
+    {'3' => 'Sell'}].freeze
+end
+
 
 def get_max_id(list)
     list.inject(0) do |memo,keys|
@@ -37,8 +41,15 @@ def get_max_id(list)
     end
 end
 
-@@max_business_category_id ||= get_max_id(@@industry_list)
-@@max_usage_level_id ||= get_max_id(@@usage_level_list)
+
+unless self.class.const_defined? 'MAX_BUSINESS_CATEGORY_ID'
+    MAX_BUSINESS_CATEGORY_ID = get_max_id(INDUSTRY_LIST)
+end
+
+unless self.class.const_defined? 'MAX_USAGE_LEVEL_ID'
+    MAX_USAGE_LEVEL_ID = get_max_id(USAGE_LEVEL_LIST)
+end
+
 
 module UuidHelper
   def generate_unique_identifiers
@@ -49,12 +60,47 @@ module UuidHelper
 end
 
 
-DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/openlove.sqlite3")
+#DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/openlove.sqlite3")
+DataMapper.setup(:default, {
+  :adapter  => 'mysql',
+  :host     => 'localhost',
+  :username => 'root' ,
+  :password => '',
+  :database => 'wuosource'}) 
 
 class Company
   include DataMapper::Resource, UuidHelper
   before :create, :generate_unique_identifiers
 
+  def self.all_activated
+    Company.all(:conditions => ['activated_at is not null']) #TODO: Elegantise
+  end
+
+  def self.all_activated_matching_search(search_string)
+	companies = []
+
+    stripped_search_string = search_string.strip 
+
+    if stripped_search_string.empty?
+        companies =  Company.all_activated
+    else
+        terms = stripped_search_string.split(' ')
+
+		conditions = ['activated_at is not null']
+
+		unless terms.empty?
+        	# build query part of the conditions
+        	conditions.first << " AND (#{[Array.new(terms.length, 'name LIKE ?').join(' OR ')]})"
+
+        	# add in query parameters
+        	terms.each{|term| conditions << "%#{term}%"}
+		end
+    
+        companies =  Company.all(:conditions => conditions)    
+    end
+
+	companies
+  end
 
   property :handle, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :id, Integer, :serial => true
@@ -76,17 +122,17 @@ class Company
   property :uuid, String #OPTIMIZEME: When db platform decided optimize type used for storage
   property :status, Enum[:pending, :notified, :activated, :suspended], :nullable => false
 
-  validates_within :business_category_id, :set => (1..@@max_business_category_id),
+  validates_within :business_category_id, :set => (1..MAX_BUSINESS_CATEGORY_ID),
 	  :message => 'Please select an Industry Type' # Implicitly cannot be blank
-  validates_within :usage_level_id, :set => (1..@@max_usage_level_id),
+  validates_within :usage_level_id, :set => (1..MAX_USAGE_LEVEL_ID),
 	  :message => 'Please select a Usage Level' # Implicitly cannot be blank
   validates_with_method :admin_email, :method => :check_email_consistency_wrt_website
   validates_with_method :blurb, :method => :blurb_legal_character_check
   validates_with_method :description, :method => :description_legal_character_check
   validates_with_method :domain, :method => :suspicious_domain_check
 
-  def business_category_text; @@industry_list[business_category_id].values.first; end
-  def usage_level_text; @@usage_level_list[usage_level_id - 1].values.first; end # -1 because index always 1 greater than value
+  def business_category_text; INDUSTRY_LIST[business_category_id].values.first; end
+  def usage_level_text; USAGE_LEVEL_LIST[usage_level_id - 1].values.first; end # -1 because index always 1 greater than value
 
   private
   def blurb_legal_character_check; legal_character_check('Blurb', blurb); end
@@ -113,10 +159,10 @@ class Company
   def suspicious_domain_check
     result = true
 
-    @@suspicious_domain_list.each do |sus_domain|
+    SUSPICIOUS_DOMAIN_LIST.each do |sus_domain|
        if website.match(sus_domain)
          result = [false, 
-           "As you're a star company, we'd like to take an extra step to verify your authenticity. Please email webmaster@#{DOMAIN} to sign up instead of this form."]
+           "As you're a star company, we'd like to take an extra step to verify your authenticity. Please email #{SUPPORT_EMAIL} to sign up instead of this form."]
        end
     end
 
@@ -127,6 +173,15 @@ end
 
 DataMapper.auto_upgrade!
 
+
+### CONTROLLER UTILITY METHODS ###
+#
+def make_reference_data_available_to_views
+  @industry_list = INDUSTRY_LIST
+  @usage_level_list = USAGE_LEVEL_LIST
+end
+
+### ### ### ### ### ###
 
 
 ### ACTIVATION RESOURCE ###
@@ -152,9 +207,15 @@ post '/activation/:uuid' do
 
       @admin_link = "http://#{DOMAIN}/companies/#{@company.uuid}/edit"
 
-      if MAILER_ENABLED 
-        send_confirmation_email('no-reply@example.com', @company.admin_email, 'Account Activated',
-        "Please click this link or copy and paste it into your browser #{@admin_link} to make changes to your account.")
+      if MAILER_ENABLED
+          send_confirmation_email('no-reply@example.com',
+              @company.admin_email,
+              'Account Activated at #{DOMAIN}',
+                  welcome_email_body(
+                  @admin_link,
+                  DOMAIN,
+                  SUPPORT_EMAIL)
+          )
       end
 
       erb :'activation/welcome'
@@ -190,38 +251,22 @@ end
 ### weuseopensource ###
 
 get '/' do
-  @companies = Company.all
+  @companies = Company.all_activated
   erb :index
 end
 
 get '/filtered_companies/*' do
 
     # Note that the splat parameter (*) comes in as an array
-
-    stripped_search_string = params[:splat].first.strip 
-
-    if stripped_search_string.empty?
-        @companies =  Company.all
-    else
-        terms = stripped_search_string.split(' ')
-
-        # build query part of the conditions
-        conditions = [Array.new(terms.length, 'name LIKE ?').join(' OR ')]
-    
-        # add in query parameters
-        terms.each{|term| conditions << "%#{term}%"}
-
-        @companies =  Company.all(:conditions => conditions)    
-    end
+	@companies = Company.all_activated_matching_search(params[:splat].first)
 
     erb(:'filtered_companies/index', :layout => false)
 end
 
-
 get '/companies/new' do
+  make_reference_data_available_to_views
+
   @company = Company.new
-  @industry_list = @@industry_list
-  @usage_level_list = @@usage_level_list
   erb :new
 end
 
@@ -233,8 +278,7 @@ end
 
 
 post '/companies' do
-  @industry_list = @@industry_list
-  @usage_level_list = @@usage_level_list
+  make_reference_data_available_to_views
 
   @company = Company.new(
     :business_category_id => params[:company_business_category_id],
@@ -254,8 +298,15 @@ post '/companies' do
   if @company.save
 
     if MAILER_ENABLED 
-      send_confirmation_email('no-reply@example.com', @company.admin_email, 'You need to activate your account',
-      "Please click this link or copy and paste it into your browser http://#{DOMAIN}/activation/#{@company.uuid}/new")
+      send_confirmation_email('no-reply@example.com',
+          @company.admin_email,
+          'You need to activate #{DOMAIN} your account',
+          activation_email_body(
+              "http://#{DOMAIN}/activation/#{@company.uuid}/new",
+              DOMAIN,
+              SUPPORT_EMAIL)
+      )
+
       @company.update_attributes(:status => :notified)
     end
 
@@ -267,8 +318,7 @@ post '/companies' do
 end
 
 get '/companies/:uuid/edit' do
-  @industry_list = @@industry_list
-  @usage_level_list = @@usage_level_list
+  make_reference_data_available_to_views
 
   @company = Company.first(:uuid => params[:uuid])
   raise 'No such account.' if @company.nil?
@@ -276,8 +326,8 @@ get '/companies/:uuid/edit' do
 end
 
 put '/companies/:uuid' do
-  @industry_list = @@industry_list
-  @usage_level_list = @@usage_level_list
+  @industry_list = INDUSTRY_LIST
+  @usage_level_list = USAGE_LEVEL_LIST
 
   @company = Company.first(:uuid => params[:uuid])
 

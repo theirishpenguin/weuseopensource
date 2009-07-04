@@ -1,3 +1,0 @@
-@@industry_list = [{'0' => 'Please select your business category'},
-{'1' => 'Software'},
-{'2' => 'Insurance'}]

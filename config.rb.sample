@@ -1,0 +1,6 @@
+DOMAIN = 'localhost:4567'
+SUPPORT_EMAIL = 'yoursupportemail@yourdomain.com'
+
+# Set this to true if you have a valid mail configuration
+# in emailconfig.rb
+MAILER_ENABLED = false
