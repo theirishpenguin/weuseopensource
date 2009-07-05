@@ -41,38 +41,31 @@
 $(document).ready(function(){// Get the value of the tab link, and display tbody
 	 $('#listLoader').click(function(e)
 			 {	
-			 	if ($(e.target).parent().is('a')) {
-
-			 		// Clear currently selected list item and select last clicked
-					$('#companies a').removeClass('selected');
-					$(e.target).parent().addClass('selected');	
-					
-					// Get the company identifier to lookup from parent <li> and
-					// ajax reload the blurb for that company
-					var company_identifier = $(e.target).parent().parent()[0].id
-					$('#loader').load('company_summaries/' + company_identifier);
-
-					// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
-
-				}
-
-			 	if ($(e.target).parent().is('li')) {
-
-			 		// Clear currently selected list item and select last clicked
-					$('#companies a').removeClass('selected');
-					$(e.target).addClass('selected');	
-					
-					// Get the company identifier to lookup from parent <li> and
-					// ajax reload the blurb for that company
-					var company_identifier = $(e.target).parent()[0].id
-					$('#loader').load('company_summaries/' + company_identifier);
-
-					// TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
-
-				}
+                // Get the company identifier to lookup from parent <li> and
+			    // ajax reload the blurb for that company
+			    // (adds action to <li> and <a> tags)
+			    if ($(e.target).parent().is('li')) {
+				    selectRow($(e.target));
+			    } else if ($(e.target).parent().is('a')) {
+				    selectRow($(e.target).parent());
+			    }
 			}
 		); 
  });
+
+function selectRow(a_element)
+{
+    // Clear currently selected list item and select last clicked
+    $('#companies a').removeClass('selected');
+    a_element.addClass('selected');	
+
+    // Get the company identifier to lookup from parent <li> and
+    // ajax reload the blurb for that company
+    var companyIdentifier = a_element.parent()[0].id
+    $('#loader').load('company_summaries/' + companyIdentifier);
+
+    // TODO: See if we need to add a random parameter to stop IE caching on if called more than once.
+}
 </script>
 
 
