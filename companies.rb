@@ -90,7 +90,7 @@ class Company
 
 		unless terms.empty?
         	# build query part of the conditions
-        	conditions.first << " AND (#{[Array.new(terms.length, 'name LIKE ?').join(' OR ')]})"
+        	conditions.first << " AND (#{[Array.new(terms.length, 'name LIKE ?').join(' AND ')]})"
 
         	# add in query parameters
         	terms.each{|term| conditions << "%#{term}%"}
