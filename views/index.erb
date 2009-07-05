@@ -10,7 +10,7 @@
  	<input type="text" name="search" id="search" value="search company names"> <input type="submit" value="GO" id="go"/>
  		
 	<div id="listLoader">
-		<% output = '<ul id = "companies" class="padding10">'
+		<% output = '<ul id="companies" class="padding10">'
 			  @companies.each {|c| output << %{<li id="#{c.handle}"><a>#{image_for_usage_level(c.usage_level_id)}<span>#{h(c.business_category_text)}</span><b>#{h(c.name)}</b>   </a></li>} }
 			  output << '</ul>'
 			%>
@@ -69,7 +69,8 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 	 $('#go').click(function()
 			{
                 // Check and see if IE will cache me!
-				$('#listLoader').load('/filtered_companies/' + escape($('#search').val()));
+				$('#listLoader').load('/filtered_companies/' + 
+                    escape($('#search').val()));
 			}
 		); 
  });
@@ -81,3 +82,9 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
     });
 </script>
 
+<script type="text/javascript" src="/scripts/jquery.quickpaginate.packed.js"></script>
+<script>
+$(function(){
+	$("#companies li").quickpaginate({ perpage: 10});
+	});
+</script>
