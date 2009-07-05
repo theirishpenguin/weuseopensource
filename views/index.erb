@@ -16,7 +16,6 @@
 			%>
 			<%= output %>	
         <span id="companies_counter"></span>
-		<ul id ="pagination"><li>Prev</li><li>Next</li></ul>
         </div>
 
 		<div id="CMbottom"><div></div></div>  <!--hold bg images for bottom curvi corners-->
@@ -70,7 +69,11 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 			{
                 // Check and see if IE will cache me!
 				$('#listLoader').load('/filtered_companies/' + 
-                    escape($('#search').val()));
+                    escape($('#search').val()), '', function() {
+
+						$("#companies li").quickpaginate({ perpage: 10});
+        				$("img.title").easyTooltip();
+					});
 			}
 		); 
  });
@@ -85,6 +88,6 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 <script type="text/javascript" src="/scripts/jquery.quickpaginate.packed.js"></script>
 <script>
 $(function(){
-	$("#companies li").quickpaginate({ perpage: 10});
+	$("#companies li").quickpaginate({ perpage: 9});
 	});
 </script>
