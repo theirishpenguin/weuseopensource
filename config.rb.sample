@@ -4,3 +4,4 @@ SUPPORT_EMAIL = 'yoursupportemail@yourdomain.com'
 # Set this to true if you have a valid mail configuration
 # in emailconfig.rb
 MAILER_ENABLED = false
+DATA_MAPPER_OPTIONS = "sqlite3://#{Dir.pwd}/openlove.sqlite3"

@@ -60,13 +60,7 @@ module UuidHelper
 end
 
 
-#DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/openlove.sqlite3")
-DataMapper.setup(:default, {
-  :adapter  => 'mysql',
-  :host     => 'localhost',
-  :username => 'root' ,
-  :password => '',
-  :database => 'wuosource'}) 
+DataMapper.setup(:default, DATA_MAPPER_OPTIONS)
 
 class Company
   include DataMapper::Resource, UuidHelper
