@@ -78,7 +78,8 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 				$('#listLoader').load('/filtered_companies/' + 
                     escape($('#search').val()), '', function() {
 
-						$("#companies li").quickpaginate({ perpage: 9});
+						$("#companies li").quickpaginate({ perpage: 10, 
+						  showcounter: true, pager : $("#companies_counter")});
         				$("img.title").easyTooltip();
 					});
 			}
@@ -95,6 +96,6 @@ $(document).ready(function(){// Get the value of the tab link, and display tbody
 <script type="text/javascript" src="/scripts/jquery.quickpaginate.packed.js"></script>
 <script>
 $(function(){
-	$("#companies li").quickpaginate({ perpage: 9});
+	$("#companies li").quickpaginate({ perpage: 10, showcounter: true, pager : $("#companies_counter")});
 	});
 </script>
